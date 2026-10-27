@@ -1,0 +1,1086 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Module 3 Quiz</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+
+<style>
+/* ── Design tokens ──────────────────────────────────────────────────────── */
+/* Layout: single-column quiz card, sticky progress header, slide-per-question */
+:root {
+  --bg:        #F7F8FA;
+  --surface:   #FFFFFF;
+  --border:    #E2E6EC;
+  --fg:        #111827;
+  --fg-2:      #4B5563;
+  --fg-3:      #9CA3AF;
+  --navy:      #12253F;
+  --teal:      #00858C;
+  --teal-lt:   #E0F4F5;
+  --gold:      #D4900A;
+  --gold-lt:   #FFF8E1;
+  --green:     #1E6E4A;
+  --green-lt:  #E6F4ED;
+  --red:       #8B1A1A;
+  --red-lt:    #FEF0F0;
+  --purple:    #5C4091;
+  --purp-lt:   #EDE8F5;
+  --radius:    12px;
+  --radius-sm: 8px;
+  --shadow:    0 2px 12px rgba(0,0,0,.07);
+  --ff-body:   'Inter', system-ui, sans-serif;
+  --ff-mono:   'JetBrains Mono', monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg:       #0D1117;
+    --surface:  #161B22;
+    --border:   #2D333B;
+    --fg:       #E6EDF3;
+    --fg-2:     #8B949E;
+    --fg-3:     #484F58;
+    --navy:     #1C3256;
+    --teal:     #1AABB3;
+    --teal-lt:  #0D2B2D;
+    --gold:     #E6A817;
+    --gold-lt:  #2A2105;
+    --green:    #2EA564;
+    --green-lt: #0D2117;
+    --red:      #D0524A;
+    --red-lt:   #2A0D0D;
+    --purple:   #8B6DD6;
+    --purp-lt:  #1E1530;
+    --shadow:   0 2px 12px rgba(0,0,0,.35);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg:       #0D1117;
+  --surface:  #161B22;
+  --border:   #2D333B;
+  --fg:       #E6EDF3;
+  --fg-2:     #8B949E;
+  --fg-3:     #484F58;
+  --navy:     #1C3256;
+  --teal:     #1AABB3;
+  --teal-lt:  #0D2B2D;
+  --gold:     #E6A817;
+  --gold-lt:  #2A2105;
+  --green:    #2EA564;
+  --green-lt: #0D2117;
+  --red:      #D0524A;
+  --red-lt:   #2A0D0D;
+  --purple:   #8B6DD6;
+  --purp-lt:  #1E1530;
+  --shadow:   0 2px 12px rgba(0,0,0,.35);
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--ff-body);
+  font-size: 15px;
+  line-height: 1.6;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0;
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+/* ── Header ─────────────────────────────────────────────────────────────── */
+.site-header {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 20;
+  background: var(--navy);
+  padding: 14px max(20px, env(safe-area-inset-left, 0px));
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-left: calc(-1 * max(16px, env(safe-area-inset-left, 0px)));
+  margin-right: calc(-1 * max(16px, env(safe-area-inset-right, 0px)));
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0 0 auto;
+  height: env(safe-area-inset-top, 0px);
+  background: var(--navy);
+  z-index: 21;
+}
+.header-title {
+  flex: 1;
+  min-width: 0;
+}
+.header-title h1 {
+  font-size: 14px;
+  font-weight: 700;
+  color: #FFFFFF;
+  letter-spacing: .02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.header-title p {
+  font-size: 11px;
+  color: rgba(255,255,255,.55);
+  margin-top: 1px;
+}
+.progress-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.progress-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--teal);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.progress-bar {
+  width: 120px;
+  height: 6px;
+  background: rgba(255,255,255,.15);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--teal);
+  border-radius: 99px;
+  width: 0%;
+  transition: width .4s ease;
+}
+@media (max-width: 480px) {
+  .progress-bar { width: 70px; }
+  .header-title p { display: none; }
+}
+
+/* ── Main layout ────────────────────────────────────────────────────────── */
+.main { max-width: 720px; margin: 0 auto; padding-block: 28px 60px; }
+
+/* ── Quiz screens ───────────────────────────────────────────────────────── */
+.screen { display: none; }
+.screen.active { display: block; }
+
+/* ── Start screen ───────────────────────────────────────────────────────── */
+.start-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 36px 32px;
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+.start-badge {
+  display: inline-block;
+  background: var(--teal-lt);
+  color: var(--teal);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  padding: 4px 14px;
+  border-radius: 99px;
+  margin-bottom: 20px;
+}
+.start-card h2 {
+  font-size: clamp(20px, 4vw, 26px);
+  font-weight: 700;
+  color: var(--fg);
+  text-wrap: balance;
+  margin-bottom: 12px;
+}
+.start-card p {
+  color: var(--fg-2);
+  max-width: 480px;
+  margin: 0 auto 28px;
+}
+.meta-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 32px;
+}
+.meta-item {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 10px;
+}
+.meta-item .num {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--teal);
+  font-variant-numeric: tabular-nums;
+}
+.meta-item .lbl {
+  font-size: 11px;
+  color: var(--fg-3);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  margin-top: 2px;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 32px;
+}
+.topic-chip {
+  background: var(--purp-lt);
+  color: var(--purple);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 99px;
+}
+
+/* ── Question card ──────────────────────────────────────────────────────── */
+.q-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.q-header {
+  background: var(--navy);
+  padding: 16px 24px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+.q-num-badge {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--teal);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-variant-numeric: tabular-nums;
+}
+.q-meta { flex: 1; min-width: 0; }
+.q-topic {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--teal);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  margin-bottom: 4px;
+}
+.q-type-badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 99px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+.q-type-badge.single { background: rgba(0,133,140,.2); color: var(--teal); }
+.q-type-badge.multi  { background: rgba(92,64,145,.2); color: var(--purple); }
+
+.q-body { padding: 24px; }
+.scenario-box {
+  background: var(--teal-lt);
+  border-left: 4px solid var(--teal);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: 14px 16px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: var(--fg);
+  line-height: 1.65;
+}
+.scenario-box strong { color: var(--teal); font-weight: 700; }
+.q-text {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--fg);
+  text-wrap: balance;
+  margin-bottom: 18px;
+  line-height: 1.5;
+}
+.q-hint {
+  font-size: 12px;
+  color: var(--fg-3);
+  margin-bottom: 16px;
+  font-style: italic;
+}
+
+/* ── Options ────────────────────────────────────────────────────────────── */
+.options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+.opt {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: border-color .15s, background .15s;
+  user-select: none;
+}
+.opt:hover { border-color: var(--teal); background: var(--teal-lt); }
+.opt:focus-visible { outline: 3px solid var(--teal); outline-offset: 2px; }
+.opt.selected { border-color: var(--teal); background: var(--teal-lt); }
+.opt.correct  { border-color: var(--green); background: var(--green-lt); }
+.opt.wrong    { border-color: var(--red); background: var(--red-lt); }
+.opt.missed   { border-color: var(--gold); background: var(--gold-lt); }
+.opt[aria-disabled="true"] { cursor: default; }
+
+.opt-marker {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--fg-2);
+  font-family: var(--ff-mono);
+  transition: all .15s;
+}
+.opt.selected .opt-marker { border-color: var(--teal); background: var(--teal); color: #fff; }
+.opt.correct  .opt-marker { border-color: var(--green); background: var(--green); color: #fff; }
+.opt.wrong    .opt-marker { border-color: var(--red); background: var(--red); color: #fff; }
+.opt.missed   .opt-marker { border-color: var(--gold); background: var(--gold); color: #fff; }
+
+.opt-text { flex: 1; min-width: 0; font-size: 14px; color: var(--fg); line-height: 1.55; padding-top: 2px; }
+
+/* ── Feedback box ───────────────────────────────────────────────────────── */
+.feedback {
+  display: none;
+  padding: 16px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 20px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.feedback.correct { background: var(--green-lt); border: 1px solid var(--green); color: var(--fg); }
+.feedback.wrong   { background: var(--red-lt);   border: 1px solid var(--red);   color: var(--fg); }
+.feedback .fb-title { font-weight: 700; margin-bottom: 6px; }
+.feedback.correct .fb-title { color: var(--green); }
+.feedback.wrong   .fb-title  { color: var(--red); }
+.feedback .fb-body { color: var(--fg-2); }
+
+/* ── Nav row ────────────────────────────────────────────────────────────── */
+.nav-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 24px;
+  border-top: 1px solid var(--border);
+  background: var(--bg);
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 22px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: opacity .15s, transform .1s;
+}
+.btn:active { transform: scale(.97); }
+.btn:focus-visible { outline: 3px solid var(--teal); outline-offset: 2px; }
+.btn-primary { background: var(--teal); color: #fff; }
+.btn-primary:hover { opacity: .9; }
+.btn-primary:disabled { opacity: .4; cursor: not-allowed; }
+.btn-ghost { background: transparent; color: var(--fg-2); border: 1px solid var(--border); }
+.btn-ghost:hover { background: var(--bg); border-color: var(--teal); color: var(--teal); }
+.btn-navy { background: var(--navy); color: #fff; }
+.btn-navy:hover { opacity: .9; }
+.score-mini {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--fg-3);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Results screen ─────────────────────────────────────────────────────── */
+.result-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.result-header {
+  background: var(--navy);
+  padding: 32px 28px;
+  text-align: center;
+}
+.result-header h2 { font-size: 22px; font-weight: 700; color: #fff; margin-bottom: 8px; text-wrap: balance; }
+.result-header p  { font-size: 14px; color: rgba(255,255,255,.6); }
+.score-ring-wrap { margin: 24px auto 0; display: flex; justify-content: center; }
+.score-ring-wrap svg { overflow: visible; }
+.score-ring-pct { font-size: 30px; font-weight: 800; fill: #fff; font-family: var(--ff-body); }
+.score-ring-lbl { font-size: 12px; fill: rgba(255,255,255,.55); font-family: var(--ff-body); }
+
+.result-body { padding: 28px; }
+.score-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 28px;
+}
+.score-tile {
+  text-align: center;
+  padding: 16px 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+.score-tile .s-num { font-size: 26px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.score-tile .s-lbl { font-size: 11px; color: var(--fg-3); text-transform: uppercase; letter-spacing: .06em; margin-top: 2px; }
+.tile-correct { background: var(--green-lt); }
+.tile-correct .s-num { color: var(--green); }
+.tile-wrong   { background: var(--red-lt); }
+.tile-wrong   .s-num { color: var(--red); }
+.tile-pct     { background: var(--teal-lt); }
+.tile-pct     .s-num { color: var(--teal); }
+
+.section-scores { margin-bottom: 28px; }
+.section-scores h3 { font-size: 13px; font-weight: 700; color: var(--fg-2); text-transform: uppercase; letter-spacing: .07em; margin-bottom: 14px; }
+.sec-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.sec-label { font-size: 13px; color: var(--fg); width: 210px; flex-shrink: 0; }
+.sec-bar-wrap { flex: 1; min-width: 0; height: 8px; background: var(--border); border-radius: 99px; overflow: hidden; }
+.sec-bar { height: 100%; border-radius: 99px; background: var(--teal); }
+.sec-frac { font-size: 12px; color: var(--fg-3); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+.grade-badge {
+  text-align: center;
+  padding: 20px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 24px;
+}
+.grade-badge .grade-letter { font-size: 48px; font-weight: 800; line-height: 1; }
+.grade-badge .grade-desc   { font-size: 14px; font-weight: 600; margin-top: 4px; }
+
+.result-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+/* ── Review mode ────────────────────────────────────────────────────────── */
+.review-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  margin-bottom: 18px;
+  overflow: hidden;
+}
+.review-q-header {
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.review-status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.dot-correct { background: var(--green); }
+.dot-wrong   { background: var(--red); }
+.review-q-meta { flex: 1; min-width: 0; }
+.review-q-num { font-size: 11px; font-weight: 700; color: var(--fg-3); text-transform: uppercase; letter-spacing: .06em; }
+.review-q-text { font-size: 14px; font-weight: 600; color: var(--fg); margin-top: 2px; text-wrap: balance; }
+.review-q-body { padding: 16px 20px; }
+.review-answer-row { display: flex; gap: 8px; align-items: flex-start; margin-bottom: 6px; font-size: 13px; }
+.review-answer-row .lbl { font-weight: 700; width: 100px; flex-shrink: 0; color: var(--fg-2); }
+.review-answer-row .val { color: var(--fg); }
+.review-exp { font-size: 13px; color: var(--fg-2); background: var(--bg); border-radius: var(--radius-sm); padding: 10px 14px; margin-top: 10px; line-height: 1.6; border: 1px solid var(--border); }
+</style>
+
+<!-- ════════════════════════════════════════════════════════ START SCREEN -->
+<div id="screen-start" class="screen active main">
+  <div class="start-card">
+    <span class="start-badge">Module 3 Assessment</span>
+    <h2>Access Control &amp; Modern Identity — Quiz</h2>
+    <p>Scenario-based questions covering all topics from Module 3. Read each scenario carefully before selecting your answer.</p>
+    <div class="meta-grid">
+      <div class="meta-item"><div class="num">30</div><div class="lbl">Questions</div></div>
+      <div class="meta-item"><div class="num">~25</div><div class="lbl">Minutes</div></div>
+      <div class="meta-item"><div class="num">75%</div><div class="lbl">Pass Mark</div></div>
+    </div>
+    <div class="topic-list">
+      <span class="topic-chip">Access Control Principles</span>
+      <span class="topic-chip">IAAA</span>
+      <span class="topic-chip">Auth Factors</span>
+      <span class="topic-chip">MFA</span>
+      <span class="topic-chip">Authorization Models</span>
+      <span class="topic-chip">VPN &amp; ZTNA</span>
+      <span class="topic-chip">Secure Browser</span>
+      <span class="topic-chip">Identity Lifecycle</span>
+    </div>
+    <button class="btn btn-primary" onclick="startQuiz()" style="font-size:16px;padding:13px 40px;">Start Quiz →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ QUESTION SCREEN -->
+<div id="screen-quiz" class="screen">
+  <div class="main" id="q-container"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ RESULTS SCREEN -->
+<div id="screen-results" class="screen">
+  <div class="main" id="results-container"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ REVIEW SCREEN -->
+<div id="screen-review" class="screen">
+  <div class="main" id="review-container">
+    <div style="display:flex;gap:12px;align-items:center;margin-bottom:24px;flex-wrap:wrap;">
+      <h2 style="font-size:20px;font-weight:700;flex:1;">Answer Review</h2>
+      <button class="btn btn-ghost" onclick="showResults()">← Back to Results</button>
+    </div>
+    <div id="review-list"></div>
+  </div>
+</div>
+
+<script>
+/* ── Quiz data ──────────────────────────────────────────────────────────── */
+const QUESTIONS = [
+// ── 1. ACCESS CONTROL PRINCIPLES ──────────────────────────────────────
+{
+  id:1, topic:"Access Control Principles", type:"single",
+  scenario:"Maria is a newly hired Administrative Officer. Her supervisor asks IT to give her 'full access to everything in our division's shared drive, just so she doesn't have to keep asking for files.'",
+  question:"Which access control principle is being violated by this request?",
+  options:["Need-to-Know","Least Privilege","Separation of Duties","Access Review & Revocation"],
+  correct:[1],
+  explanation:"Least Privilege requires granting only the minimum access needed to perform a job function. Giving Maria 'full access to everything' before knowing what she actually needs violates this principle. Access should be granted based on specific job requirements, not convenience."
+},
+{
+  id:2, topic:"Access Control Principles", type:"multi",
+  scenario:"In your agency, the same Finance Officer both initiates disbursement vouchers AND approves them in the FMIS — because your division is understaffed.",
+  question:"Which access control principle(s) does this violate? Select ALL that apply.",
+  options:["Least Privilege","Separation of Duties","Need-to-Know","Time-of-Day Restrictions"],
+  correct:[1,2],
+  explanation:"Separation of Duties requires that no single person controls an entire high-risk transaction. The initiator and approver of a payment must be different people — this is a COA requirement. Need-to-Know is also relevant: the approver function belongs to a different role with a different documented need. This is a common internal control failure and an audit finding."
+},
+{
+  id:3, topic:"Access Control Principles", type:"single",
+  scenario:"The HRIS shows that a Legal Officer (SG-18) has been accessing payroll records. When asked, she says 'I'm the same salary grade as the HR Chief so I assumed I had the same access.'",
+  question:"Which principle directly addresses why her assumption is wrong?",
+  options:["Separation of Duties","Time-of-Day Restrictions","Need-to-Know","Location-Based Controls"],
+  correct:[2],
+  explanation:"Need-to-Know means access follows function, not rank. Even if two employees have the same salary grade, access is granted only when there is a documented, legitimate business need tied to their specific job function. A Legal Officer has no need to access payroll data."
+},
+{
+  id:4, topic:"Access Control Principles", type:"single",
+  scenario:"Your agency's FMIS shows several login events at 11:45 PM on a Saturday from a Finance Staff account. The finance division was closed and no overtime was approved.",
+  question:"Which access control principle, if implemented, would have blocked this access?",
+  options:["Need-to-Know","Least Privilege","Time-of-Day Restrictions","Access Review & Revocation"],
+  correct:[2],
+  explanation:"Time-of-Day Restrictions configure systems to block or flag logins outside approved business hours. A financial system should not be accessible at midnight on a weekend without explicit override authorization. This control eliminates an entire category of off-hours unauthorized access."
+},
+{
+  id:5, topic:"Access Control Principles", type:"multi",
+  scenario:"During an audit, COA finds that three former employees who resigned 4–8 months ago still have active accounts in the agency's HRIS, FMIS, and email system.",
+  question:"Which access control principle(s) were violated? Select ALL that apply.",
+  options:["Least Privilege","Separation of Duties","Access Review & Revocation","Need-to-Know"],
+  correct:[0,2,3],
+  explanation:"Access Review & Revocation requires that access is removed when a person leaves. Least Privilege is violated because there is no longer any job function to justify the access. Need-to-Know is violated because former employees have no documented business need. This is a critical Leaver failure in the Identity Lifecycle and a COA audit finding."
+},
+
+// ── 2. IAAA ────────────────────────────────────────────────────────────
+{
+  id:6, topic:"IAAA", type:"single",
+  scenario:"Juan types his username 'jdcruz01' into the agency's HRIS login page.",
+  question:"What has Juan done at this point in the IAAA process?",
+  options:["Authenticated himself — the system now trusts him","Identified himself — he has made a claim, not proven it","Authorized himself — the system knows what he can do","Created an accountability record — the log now has his entry"],
+  correct:[1],
+  explanation:"Identification is the act of claiming an identity — stating 'I am jdcruz01.' It is a claim, not proof. The system has received a username but has not yet verified it. Authentication (proving the claim) happens in the next step when Juan provides a password, OTP, or other credential."
+},
+{
+  id:7, topic:"IAAA", type:"single",
+  scenario:"After logging in successfully, Juan tries to open the Audit Logs module. The system shows 'Access Denied: Insufficient permissions for this resource.'",
+  question:"Which IAAA step just occurred?",
+  options:["Identification — the system identified Juan as the wrong user","Authentication — Juan's credentials did not match","Authorization — Juan's role does not permit access to audit logs","Accountability — the system logged Juan's failed attempt"],
+  correct:[2],
+  explanation:"Authorization determines what an authenticated user is allowed to do. Juan was successfully authenticated (proven to be jdcruz01), but his role — Finance Officer — does not have permission to access audit logs. Authorization denied the specific action. Note: Accountability also occurs here — the denied attempt is logged — but the primary step being described is Authorization."
+},
+{
+  id:8, topic:"IAAA", type:"multi",
+  scenario:"Six months after an incident, an investigator asks: 'Who accessed the disbursement records on March 15 at 2:17 PM, and what did they do?' IT responds: 'We don't have logs for that system.'",
+  question:"Which IAAA component(s) failed? Select ALL that apply.",
+  options:["Identification","Authentication","Authorization","Accountability"],
+  correct:[3],
+  explanation:"Accountability requires that all access and actions be logged to a tamper-evident audit trail. Without logs, you cannot reconstruct what happened, prove who did it, or establish legal evidence. This is a critical failure — particularly under RA 10173, where a breach investigation requires knowing exactly which records were accessed and by whom."
+},
+{
+  id:9, topic:"IAAA", type:"single",
+  scenario:"An employee says: 'I didn't access those records — it wasn't me.' The audit log shows 'jdcruz01 accessed Finance DB at 14:17, exported 243 records, from IP 192.168.1.45.'",
+  question:"What property of the audit log is most important here?",
+  options:["It is searchable and filterable","It is non-repudiable — Juan cannot credibly deny the action","It shows the IP address — proving it was Juan's device","It is stored in the cloud — making it tamper-proof"],
+  correct:[1],
+  explanation:"Non-repudiation is the key property: the audit log creates a record the user cannot credibly deny. The log records who (jdcruz01), what (exported records), when (14:17), from where (IP address) — making it legally defensible. Note: An IP address alone does not prove it was Juan's device (accounts can be compromised), but the combination of authenticated session + logged actions establishes accountability."
+},
+
+// ── 3. AUTHENTICATION FACTORS ─────────────────────────────────────────
+{
+  id:10, topic:"Authentication Factors", type:"single",
+  scenario:"A staff member receives a phishing email that looks exactly like the agency login page. She enters her username and password before realizing it was fake. The attacker now has her credentials.",
+  question:"Which authentication factor type was compromised, and why is it particularly vulnerable to this attack?",
+  options:["Type 2 (Something you Have) — because devices can be stolen","Type 1 (Something you Know) — because it can be extracted without physical access","Type 3 (Something you Are) — because biometrics can be spoofed","Type 2 (Something you Have) — because OTPs can be intercepted"],
+  correct:[1],
+  explanation:"Type 1 factors (passwords, PINs, security questions) live only in memory and can be extracted through phishing, social engineering, or observation — without the attacker ever needing physical access. This is why the majority of data breaches globally involve compromised passwords. Type 2 and Type 3 factors require physical possession or physical presence, making them significantly harder to steal remotely."
+},
+{
+  id:11, topic:"Authentication Factors", type:"single",
+  scenario:"Your agency is considering adding security questions ('What is your mother's maiden name?') as a second authentication factor for the HRIS.",
+  question:"Why does this NOT constitute effective Multi-Factor Authentication?",
+  options:["Security questions are a Type 1 factor — adding another Type 1 factor is not MFA","Security questions are too difficult for older staff to remember","Security questions are not supported by government systems","Security questions expire too quickly to be useful"],
+  correct:[0],
+  explanation:"MFA requires combining different factor TYPES. Security questions are Type 1 (something you know) — the same type as passwords. Adding a security question to a password means you have two Type 1 factors, not two different factors. If an attacker has compromised your password, they likely have the same capability to obtain your security question answers (which are often publicly available on social media)."
+},
+{
+  id:12, topic:"Authentication Factors", type:"multi",
+  scenario:"Your agency needs to choose the most secure MFA method for IT Administrators who manage servers, user accounts, and audit logs.",
+  question:"Which authentication factor type(s) would be MOST appropriate? Select ALL that apply.",
+  options:["Type 1 only — a strong 16-character password","Type 2 — a hardware security key (FIDO2)","Type 3 — biometric scan tied to a registered device","Type 1 + Type 2 — password plus SMS OTP"],
+  correct:[1,2],
+  explanation:"For privileged access (IT Admins with access to servers and audit logs), the strongest authentication is required. FIDO2 hardware keys are phishing-resistant by design — a fake login page cannot trigger the cryptographic response. Biometric + registered device is also strong. SMS OTP (Type 1 + Type 2) is better than password-only but is vulnerable to SIM swapping. A password alone is insufficient for this level of privileged access."
+},
+{
+  id:13, topic:"Authentication Factors", type:"single",
+  scenario:"A staff member's biometric data (fingerprint) is stolen in a data breach. The agency's security officer says 'Just enroll her fingerprint again on a new device.'",
+  question:"Why is the security officer's response missing a critical point?",
+  options:["Biometric re-enrollment is not allowed under RA 10173","The stolen fingerprint data cannot be changed — she has a permanent credential compromise","Biometric systems require COA approval before re-enrollment","The staff member must use a different finger for the new enrollment"],
+  correct:[1],
+  explanation:"This is the fundamental risk of biometric (Type 3) factors: unlike passwords or tokens, biometrics cannot be changed if compromised. You can reset a password. You cannot get new fingerprints. The staff member's fingerprint data, once stolen, is permanently exposed. This is why biometric databases are among the most sensitive data an agency can hold, and why RA 10173 classifies biometric data as sensitive personal information requiring the highest level of protection."
+},
+
+// ── 4. MFA ────────────────────────────────────────────────────────────
+{
+  id:14, topic:"Multi-Factor Authentication", type:"single",
+  scenario:"During a budget review, a division chief says: 'We already have two-step login — users enter their employee ID number AND their password. That's two factors, so we don't need additional MFA.'",
+  question:"Is the division chief correct? Why or why not?",
+  options:["Correct — two steps equals two factors","Incorrect — an employee ID is not an authentication factor at all; password alone is one factor","Incorrect — employee ID and password are both Type 1 factors; this is one-factor authentication","Correct — combining an ID number with a password meets the MFA requirement"],
+  correct:[2],
+  explanation:"MFA requires combining DIFFERENT TYPES of factors. Employee ID and password are both Type 1 (something you know). Two Type 1 factors is not MFA — it is single-factor authentication performed twice. True MFA requires at least two different factor types: e.g., password (Type 1) + OTP code from authenticator app (Type 2)."
+},
+{
+  id:15, topic:"Multi-Factor Authentication", type:"single",
+  scenario:"Your agency wants to implement MFA for all staff who access the HRIS remotely. Budget is limited, and many staff have basic phones with no smartphone. Which MFA option best fits this constraint?",
+  question:"Which MFA option is most feasible for this scenario?",
+  options:["FIDO2 hardware keys — most secure option","Authenticator App (TOTP) — requires smartphone","SMS OTP — works on any phone including basic models","Biometric + Device — requires specific hardware"],
+  correct:[2],
+  explanation:"SMS OTP is the most feasible option when staff use basic (non-smart) phones. It requires no app installation and works on any device that can receive a text message. While SMS OTP has a weakness (SIM swapping), it is a significant improvement over password-only authentication and is deployable across diverse device types. For agencies with budget constraints and mixed device environments, it is the practical starting point."
+},
+{
+  id:16, topic:"Multi-Factor Authentication", type:"multi",
+  scenario:"A phishing campaign specifically targets your agency. Staff are receiving fake login pages that look identical to the real portal. They capture the password and — in real time — also prompt the user to enter their SMS OTP.",
+  question:"Which MFA methods would STILL protect staff even against this real-time phishing attack? Select ALL that apply.",
+  options:["SMS OTP — the 30-second window limits exposure","Authenticator App (TOTP) — the code changes before it can be used","FIDO2 Hardware Key — cryptographically bound to the legitimate site only","Biometric scan on device — device-bound and cannot be replicated"],
+  correct:[2],
+  explanation:"FIDO2 hardware keys are phishing-resistant by design. The cryptographic challenge-response is bound to the specific legitimate website's domain. A fake phishing site cannot trigger the hardware key's authentication because it has a different domain. SMS OTP and Authenticator TOTP codes CAN be stolen in real-time attacks — attackers relay them immediately. Biometric scans are device-bound and also resistant, but FIDO2 is the gold standard for anti-phishing authentication."
+},
+
+// ── 5. AUTHORIZATION MODELS ───────────────────────────────────────────
+{
+  id:17, topic:"Authorization Models", type:"single",
+  scenario:"Your agency assigns system permissions to job positions — Records Officer, Finance Staff, IT Admin — and every person in that position automatically inherits the same access rights. When someone is promoted, their role assignment is updated and their access changes accordingly.",
+  question:"Which authorization model is your agency using?",
+  options:["DAC — Discretionary Access Control","MAC — Mandatory Access Control","RBAC — Role-Based Access Control","ABAC — Attribute-Based Access Control"],
+  correct:[2],
+  explanation:"Role-Based Access Control (RBAC) assigns permissions to roles, and users are assigned to roles. All Records Officers inherit the same access; all Finance Staff inherit the same access. When a person's role changes, their access changes with it. This is the most common model in Philippine government systems — and exactly what Activity 3 asked you to design."
+},
+{
+  id:18, topic:"Authorization Models", type:"single",
+  scenario:"An employee shares a Google Drive folder containing legal case documents with three colleagues 'because they might need it.' No IT approval was sought. Two of the three had no legitimate reason to see the documents.",
+  question:"Which authorization model describes what just happened — and why is it risky?",
+  options:["RBAC — because roles are being assigned informally","MAC — because classification labels were not applied","DAC — the resource owner made an access decision independently, with no oversight","ABAC — multiple attributes were evaluated before granting access"],
+  correct:[2],
+  explanation:"Discretionary Access Control (DAC) means the resource owner decides who can access their own resources. It is the most permissive and most dangerous model because it relies entirely on individual judgment. The employee made an access decision based on convenience, not documented need or IT oversight. This is how sensitive documents end up in unauthorized inboxes — and why agencies need policies that restrict DAC behavior."
+},
+{
+  id:19, topic:"Authorization Models", type:"single",
+  scenario:"Your agency's cloud platform is configured to grant access to sensitive files ONLY IF: the user's clearance is 'Confidential', the document is classified 'Internal', AND the access occurs between 8 AM and 6 PM from an agency-registered device.",
+  question:"Which authorization model is being implemented?",
+  options:["RBAC","MAC","DAC","ABAC"],
+  correct:[3],
+  explanation:"Attribute-Based Access Control (ABAC) evaluates multiple attributes in real time: user attributes (clearance level), resource attributes (document classification), and environmental attributes (time of day, device registration). When all conditions are met, access is granted. ABAC is more fine-grained than RBAC and is increasingly found in cloud platforms like Microsoft Azure's Conditional Access."
+},
+
+// ── 6. VPN vs ZTNA ────────────────────────────────────────────────────
+{
+  id:20, topic:"VPN & Zero Trust", type:"single",
+  scenario:"An attacker compromises a Records Officer's VPN credentials. Once connected to the VPN, the attacker begins probing the FMIS, HRIS, and server management console — none of which the Records Officer was supposed to access.",
+  question:"Which VPN vulnerability does this scenario demonstrate?",
+  options:["The VPN tunnel was not encrypted properly","VPN concentrators are the weakest link in the network","Lateral movement — once inside the VPN, the attacker can reach systems beyond the compromised account's intended scope","The Records Officer's password was too short"],
+  correct:[2],
+  explanation:"Lateral movement is the core VPN risk. Traditional VPN operates on a 'trust the network' model — once inside, users have broad access to internal resources. A compromised account becomes a pivot point: the attacker can probe systems far beyond what the original account was permitted to access. This is why ZTNA is designed to grant access to specific applications only, not the entire network — a compromised account in ZTNA can only reach what that account is explicitly authorized for."
+},
+{
+  id:21, topic:"VPN & Zero Trust", type:"multi",
+  scenario:"Your agency is planning to migrate 60% of its systems to cloud services over the next two years. The IT team recommends moving from VPN to Zero Trust Network Access (ZTNA).",
+  question:"Which characteristics of ZTNA make it more suitable for cloud environments? Select ALL that apply.",
+  options:["ZTNA encrypts the VPN tunnel more strongly","ZTNA grants access to specific applications only, not the whole network","ZTNA verifies identity, device health, and context on every request — not just at login","ZTNA is cheaper to implement than VPN","ZTNA reduces lateral movement risk by siloing access to individual applications"],
+  correct:[1,2,4],
+  explanation:"ZTNA is designed for cloud and hybrid environments because: (1) it grants per-application access rather than network access, so cloud apps don't require routing through a corporate network; (2) it verifies identity and context continuously — not just at the initial login — adapting to risk in real time; (3) siloed application access means a compromised account cannot move laterally to unrelated systems. ZTNA does not necessarily have a lower cost, and the encryption strength comparison with VPN is not the primary differentiator."
+},
+{
+  id:22, topic:"VPN & Zero Trust", type:"single",
+  scenario:"During a briefing, a department head asks: 'What is the practical difference between VPN and ZTNA in one sentence?'",
+  question:"Which answer best summarizes the core difference?",
+  options:["VPN encrypts traffic; ZTNA does not","VPN trusts the network after authentication; ZTNA verifies identity on every request and grants access to specific applications only","VPN is for offices; ZTNA is only for remote workers","VPN requires a hardware device; ZTNA is software-only"],
+  correct:[1],
+  explanation:"The core difference: VPN's model is 'trust the network' — once authenticated, broad access is granted. ZTNA's model is 'never trust, always verify' — every access request is authenticated and authorized for that specific application, regardless of where the user is connecting from. This is the most accurate and concise summary for a management audience."
+},
+
+// ── 7. SECURE BROWSER ─────────────────────────────────────────────────
+{
+  id:23, topic:"Secure Browser", type:"single",
+  scenario:"A field officer working from home accesses the agency's HRIS web portal using her personal laptop. Without anyone noticing, she copies a list of employee PDSs into a personal USB drive and pastes the data into a personal email.",
+  question:"Which Secure Browser capability, if deployed, would have prevented this?",
+  options:["Policy-Controlled Access — blocks unauthorized websites","Data Loss Prevention (DLP) — prevents copying, downloading, and screen capture outside approved workflows","Identity-Aware Browsing — ties access to a verified identity","Malware Isolation — isolates web content from the device"],
+  correct:[1],
+  explanation:"Data Loss Prevention (DLP) in a Secure Browser prevents users from downloading files to personal storage, copy-pasting data to external applications, and printing or screen-capturing sensitive content outside approved workflows. Even if the user is authenticated and authorized to VIEW the HRIS data, the Secure Browser blocks any attempt to extract it to an unauthorized destination."
+},
+{
+  id:24, topic:"Secure Browser", type:"multi",
+  scenario:"Your agency's IT Security team is evaluating a Secure Browser deployment for 200 remote staff. The team wants to understand what problems it solves.",
+  question:"Which risks does a Secure Browser directly address? Select ALL that apply.",
+  options:["Drive-by malware from visiting external websites","Session token hijacking from the browser","Staff accessing unauthorized websites on agency time","Lack of audit logs for browsing activity","Weak passwords on the agency portal"],
+  correct:[0,1,2,3],
+  explanation:"A Secure Browser addresses: (1) Malware Isolation — web content renders in an isolated environment, preventing drive-by downloads and malicious scripts; (2) Identity-Aware Browsing — session credentials are protected and cannot be extracted; (3) Policy-Controlled Access — IT controls which sites are accessible; (4) Audit and Visibility — every session is logged, enabling detection of anomalous behavior. Weak passwords are an authentication problem addressed by MFA, not by the browser itself."
+},
+{
+  id:25, topic:"Secure Browser", type:"single",
+  scenario:"A colleague asks: 'Is a Secure Browser just another name for a VPN?'",
+  question:"What is the correct answer?",
+  options:["Yes — both provide secure encrypted tunnels to agency systems","No — a VPN provides network access; a Secure Browser provides a controlled, policy-enforced environment for web application access at the browser layer","No — a Secure Browser replaces the need for any network security","Yes — both are designed to prevent phishing attacks"],
+  correct:[1],
+  explanation:"They solve different problems at different layers. VPN provides an encrypted tunnel to the network. A Secure Browser provides a controlled, policy-enforced environment specifically for web application access — preventing data exfiltration, malware injection, and credential theft at the browser layer. They are complementary controls, not replacements for each other. Combined with ZTNA, a Secure Browser provides a complete Zero Trust access layer for web-based work."
+},
+
+// ── 8. IDENTITY LIFECYCLE ─────────────────────────────────────────────
+{
+  id:26, topic:"Identity Lifecycle", type:"single",
+  scenario:"Miguel is promoted from Records Officer to Division Chief. IT sets up his new Division Chief access — which includes approval authority in the FMIS. Six months later, an audit reveals Miguel can still approve FMIS transactions AND access the Records division's document management system, which his current role does not require.",
+  question:"What Identity Lifecycle problem is this, and what is the term for Miguel's accumulated excess access?",
+  options:["Joiner failure — Miguel was not properly onboarded as Division Chief","Leaver failure — Miguel's old account was not properly deactivated","Mover failure — old access was not removed when his role changed; this is called privilege creep","Access Review failure — quarterly reviews were not conducted"],
+  correct:[2],
+  explanation:"This is a Mover failure — when someone changes role, old access must be removed. The term for the condition is privilege creep: access accumulates over multiple role changes without ever being removed, so the person ends up with far more access than any single role justifies. It is the most common access control failure in government agencies and a classic audit finding. The fix requires a formal process: when a role changes, old access is reviewed and removed within a defined SLA."
+},
+{
+  id:27, topic:"Identity Lifecycle", type:"multi",
+  scenario:"Rosa resigns from the agency effective Friday. On the following Tuesday — four working days later — IT receives an email from HR informing them of her resignation. By Thursday, her accounts are finally deactivated.",
+  question:"Which Identity Lifecycle requirements were violated? Select ALL that apply.",
+  options:["HR must notify IT in advance of, or on the day of, the staff member's last working day","The account must be disabled on the last working day — not days later","Physical access (ID card, building entry) must also be revoked — not just the system account","Audit logs from Rosa's account must be deleted once she is no longer an employee"],
+  correct:[0,1,2],
+  explanation:"Leaver requirements: (1) HR must notify IT promptly — same-day or in advance — so IT can act in time; (2) Accounts must be disabled on the last working day, not days later; (3) Physical and logical access must be revoked simultaneously. Option D is incorrect — audit logs of a former employee's actions must be PRESERVED (archived), never deleted. They may be needed as evidence in future investigations, and retention is required under records management and legal frameworks."
+},
+{
+  id:28, topic:"Identity Lifecycle", type:"single",
+  scenario:"The simulation scenario — '8:17 AM, Something Is Wrong' — involved an account belonging to a transferred staff member that was used to log in from an unusual location and export records.",
+  question:"Which stage of the Identity Lifecycle failed to prevent this incident?",
+  options:["Joiner — the account was not properly provisioned when the staff member first joined","Leaver — the staff member's account should have been deleted upon transfer","Mover — the staff member's access rights were not updated when they transferred to a new division","Access Review — quarterly reviews were not conducted frequently enough"],
+  correct:[2],
+  explanation:"This is a Mover failure. The staff member transferred to a new division but their old access was not reviewed or updated. The old account — with old access rights — remained active. The fix is a formal Mover process: on the day of transfer, HR notifies IT, old access is reviewed, non-required access is removed, and new role-appropriate access is provisioned. The access should have been updated at transfer time, not after an incident."
+},
+{
+  id:29, topic:"Identity Lifecycle", type:"multi",
+  scenario:"Your agency is drafting an Account Lifecycle Policy. The policy committee is debating which steps to include for a new employee's first day (Joiner stage).",
+  question:"Which steps should be included in a proper Joiner process? Select ALL that apply.",
+  options:["Provision the account before the staff member's first day, based on their confirmed role","Give the staff member a temporary password that forces a reset at first login","Enroll the staff member in MFA before or at first login","Give the staff member access to all systems in their division so they can explore their new role","Have the staff member sign or acknowledge the Acceptable Use Policy before receiving access"],
+  correct:[0,1,2,4],
+  explanation:"Proper Joiner steps: account ready before Day 1 (so the person can work on their first day); temporary password forcing reset (so only the user knows their password from the start); MFA enrollment at first login (highest-risk moment — account must be secured immediately); AUP acknowledgment before access (establishes accountability from Day 1). Option D is incorrect — giving access to 'all systems to explore' violates Least Privilege and Need-to-Know, and is exactly the kind of over-provisioning that creates future access review problems."
+},
+{
+  id:30, topic:"Identity Lifecycle", type:"single",
+  scenario:"After a full day of training on access control principles, a senior manager asks: 'What is the single most important change we can make right now — that costs nothing and makes the biggest difference to our access security?'",
+  question:"Based on everything covered in Module 3, what is the most impactful, zero-cost recommendation?",
+  options:["Deploy ZTNA immediately to replace the existing VPN","Establish a formal Joiner-Mover-Leaver process: define SLAs, create a checklist, and ensure HR notifies IT on the same day as any staff movement","Purchase hardware security keys for all staff","Implement MAC (Mandatory Access Control) across all agency systems"],
+  correct:[1],
+  explanation:"A formal JML process requires no technology procurement — only a conversation between HR and IT to agree on a process, an SLA (e.g., account changes within 24 hours of role change), and a checklist. It directly addresses the most common access control failure in government agencies (privilege creep, Mover failures, unrevoked Leaver accounts) at zero cost. ZTNA and hardware keys are valuable but require procurement and planning. MAC is appropriate only for high-security classified environments."
+}
+];
+
+/* ── State ──────────────────────────────────────────────────────────────── */
+let current = 0;
+let answers = {}; // {qIndex: [selectedIndices]}
+let answered = {}; // {qIndex: bool}
+let score = 0;
+
+/* ── Helpers ────────────────────────────────────────────────────────────── */
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+}
+function updateHeader() {
+  const done = Object.keys(answered).length;
+  document.getElementById('prog-label').textContent = (current + 1) + ' / ' + QUESTIONS.length;
+  document.getElementById('prog-fill').style.width = (done / QUESTIONS.length * 100) + '%';
+}
+
+/* ── Start ──────────────────────────────────────────────────────────────── */
+function startQuiz() {
+  current = 0; answers = {}; answered = {}; score = 0;
+  showScreen('quiz');
+  renderQuestion();
+}
+
+/* ── Render question ────────────────────────────────────────────────────── */
+function renderQuestion() {
+  const q = QUESTIONS[current];
+  const isAnswered = !!answered[current];
+  const sel = answers[current] || [];
+
+  let html = `<div class="q-card">
+    <div class="q-header">
+      <div class="q-num-badge">${q.id}</div>
+      <div class="q-meta">
+        <div class="q-topic">${q.topic}</div>
+        <span class="q-type-badge ${q.type}">${q.type === 'single' ? 'Single answer' : 'Select all that apply'}</span>
+      </div>
+    </div>
+    <div class="q-body">
+      <div class="scenario-box"><strong>Scenario:</strong> ${q.scenario}</div>
+      <div class="q-text">${q.question}</div>`;
+
+  if (q.type === 'multi') {
+    html += `<div class="q-hint">💡 This question has more than one correct answer. Select all that apply.</div>`;
+  }
+
+  html += `<div class="options" role="group" aria-label="Answer options">`;
+  const letters = ['A','B','C','D','E'];
+  q.options.forEach((opt, i) => {
+    let cls = 'opt';
+    let ariaDisabled = '';
+    if (isAnswered) {
+      ariaDisabled = 'aria-disabled="true"';
+      if (q.correct.includes(i)) cls += ' correct';
+      else if (sel.includes(i)) cls += ' wrong';
+      // missed: was correct but not selected
+      if (q.correct.includes(i) && !sel.includes(i)) cls = 'opt missed';
+    } else {
+      if (sel.includes(i)) cls += ' selected';
+    }
+    html += `<div class="${cls}" role="${q.type === 'single' ? 'radio' : 'checkbox'}" tabindex="0" ${ariaDisabled}
+      onclick="selectOption(${i})" onkeydown="if(event.key==='Enter'||event.key===' ')selectOption(${i})">
+      <div class="opt-marker">${letters[i]}</div>
+      <div class="opt-text">${opt}</div>
+    </div>`;
+  });
+  html += `</div>`;
+
+  // Feedback
+  if (isAnswered) {
+    const isCorrect = JSON.stringify(sel.slice().sort()) === JSON.stringify(q.correct.slice().sort());
+    html += `<div class="feedback ${isCorrect ? 'correct' : 'wrong'}" style="display:block">
+      <div class="fb-title">${isCorrect ? '✓ Correct' : '✗ Incorrect'}</div>
+      <div class="fb-body">${q.explanation}</div>
+    </div>`;
+  }
+
+  html += `</div><!-- q-body -->
+    <div class="nav-row">`;
+
+  if (current > 0) {
+    html += `<button class="btn btn-ghost" onclick="goTo(${current - 1})">← Previous</button>`;
+  }
+
+  if (!isAnswered) {
+    html += `<button class="btn btn-primary" id="btn-submit" onclick="submitAnswer()"
+      ${sel.length === 0 ? 'disabled' : ''}>Submit Answer</button>`;
+  } else if (current < QUESTIONS.length - 1) {
+    html += `<button class="btn btn-primary" onclick="goTo(${current + 1})">Next Question →</button>`;
+  } else {
+    html += `<button class="btn btn-navy" onclick="showResults()">See Results →</button>`;
+  }
+
+  const done = Object.keys(answered).length;
+  html += `<span class="score-mini">${done} / ${QUESTIONS.length} answered</span>`;
+  html += `</div></div>`;
+
+  document.getElementById('q-container').innerHTML = html;
+  updateHeader();
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+/* ── Select option ──────────────────────────────────────────────────────── */
+function selectOption(i) {
+  if (answered[current]) return;
+  const q = QUESTIONS[current];
+  if (!answers[current]) answers[current] = [];
+
+  if (q.type === 'single') {
+    answers[current] = [i];
+  } else {
+    const idx = answers[current].indexOf(i);
+    if (idx === -1) answers[current].push(i);
+    else answers[current].splice(idx, 1);
+  }
+  renderQuestion();
+}
+
+/* ── Submit ─────────────────────────────────────────────────────────────── */
+function submitAnswer() {
+  if (!answers[current] || answers[current].length === 0) return;
+  answered[current] = true;
+  const q = QUESTIONS[current];
+  const sel = answers[current].slice().sort((a,b)=>a-b);
+  const cor = q.correct.slice().sort((a,b)=>a-b);
+  if (JSON.stringify(sel) === JSON.stringify(cor)) score++;
+  renderQuestion();
+}
+
+/* ── Navigate ───────────────────────────────────────────────────────────── */
+function goTo(idx) {
+  current = idx;
+  renderQuestion();
+}
+
+/* ── Results ────────────────────────────────────────────────────────────── */
+function showResults() {
+  showScreen('results');
+  updateHeader();
+
+  const pct = Math.round(score / QUESTIONS.length * 100);
+  const topics = {};
+  QUESTIONS.forEach((q, i) => {
+    if (!topics[q.topic]) topics[q.topic] = {correct: 0, total: 0};
+    topics[q.topic].total++;
+    if (answered[i]) {
+      const sel = (answers[i] || []).slice().sort((a,b)=>a-b);
+      const cor = q.correct.slice().sort((a,b)=>a-b);
+      if (JSON.stringify(sel) === JSON.stringify(cor)) topics[q.topic].correct++;
+    }
+  });
+
+  let grade, gradeCls, gradeDesc;
+  if (pct >= 90)      { grade='A'; gradeCls='green'; gradeDesc='Excellent — Outstanding performance'; }
+  else if (pct >= 80) { grade='B'; gradeCls='teal';  gradeDesc='Good — Above the pass mark'; }
+  else if (pct >= 75) { grade='C'; gradeCls='gold';  gradeDesc='Passing — Meets the minimum requirement'; }
+  else                { grade='F'; gradeCls='red';   gradeDesc='Needs Review — Below 75% pass mark'; }
+
+  // SVG ring
+  const r = 54, cx = 70, cy = 70;
+  const circ = 2 * Math.PI * r;
+  const dash = circ * pct / 100;
+
+  let secRows = '';
+  Object.entries(topics).forEach(([name, d]) => {
+    const p = d.total > 0 ? Math.round(d.correct/d.total*100) : 0;
+    const barColor = p >= 75 ? 'var(--green)' : p >= 50 ? 'var(--gold)' : 'var(--red)';
+    secRows += `<div class="sec-row">
+      <div class="sec-label">${name}</div>
+      <div class="sec-bar-wrap"><div class="sec-bar" style="width:${p}%;background:${barColor}"></div></div>
+      <div class="sec-frac">${d.correct}/${d.total}</div>
+    </div>`;
+  });
+
+  document.getElementById('results-container').innerHTML = `
+  <div class="result-card">
+    <div class="result-header">
+      <h2>Quiz Complete</h2>
+      <p>Module 3 — Access Control &amp; Modern Identity</p>
+      <div class="score-ring-wrap">
+        <svg width="140" height="140" viewBox="0 0 140 140">
+          <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="10"/>
+          <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--teal)" stroke-width="10"
+            stroke-dasharray="${dash} ${circ}" stroke-linecap="round"
+            transform="rotate(-90 ${cx} ${cy})"/>
+          <text x="${cx}" y="${cy - 6}" text-anchor="middle" class="score-ring-pct">${pct}%</text>
+          <text x="${cx}" y="${cy + 16}" text-anchor="middle" class="score-ring-lbl">Score</text>
+        </svg>
+      </div>
+    </div>
+    <div class="result-body">
+      <div class="score-grid">
+        <div class="score-tile tile-correct"><div class="s-num">${score}</div><div class="s-lbl">Correct</div></div>
+        <div class="score-tile tile-wrong"><div class="s-num">${QUESTIONS.length - score}</div><div class="s-lbl">Incorrect</div></div>
+        <div class="score-tile tile-pct"><div class="s-num">${pct}%</div><div class="s-lbl">Score</div></div>
+      </div>
+      <div class="grade-badge" style="background:var(--${gradeCls}-lt);border:1px solid var(--${gradeCls})">
+        <div class="grade-letter" style="color:var(--${gradeCls})">${grade}</div>
+        <div class="grade-desc" style="color:var(--${gradeCls})">${gradeDesc}</div>
+      </div>
+      <div class="section-scores">
+        <h3>Performance by Topic</h3>
+        ${secRows}
+      </div>
+      <div class="result-actions">
+        <button class="btn btn-primary" onclick="showReview()">Review All Answers</button>
+        <button class="btn btn-ghost" onclick="startQuiz()">Retake Quiz</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ── Review ─────────────────────────────────────────────────────────────── */
+function showReview() {
+  showScreen('review');
+  const list = document.getElementById('review-list');
+  const letters = ['A','B','C','D','E'];
+  let html = '';
+  QUESTIONS.forEach((q, i) => {
+    const sel = answers[i] || [];
+    const isCorrect = answered[i] && JSON.stringify(sel.slice().sort((a,b)=>a-b)) === JSON.stringify(q.correct.slice().sort((a,b)=>a-b));
+    const yourAns = sel.length > 0 ? sel.map(x => letters[x] + '. ' + q.options[x]).join('; ') : 'Not answered';
+    const corrAns = q.correct.map(x => letters[x] + '. ' + q.options[x]).join('; ');
+    html += `<div class="review-card">
+      <div class="review-q-header">
+        <div class="review-status-dot ${isCorrect ? 'dot-correct' : 'dot-wrong'}"></div>
+        <div class="review-q-meta">
+          <div class="review-q-num">Q${q.id} · ${q.topic} · ${q.type === 'single' ? 'Single answer' : 'Multiple answers'}</div>
+          <div class="review-q-text">${q.question}</div>
+        </div>
+      </div>
+      <div class="review-q-body">
+        <div class="review-answer-row">
+          <span class="lbl" style="color:${isCorrect ? 'var(--green)' : 'var(--red)'}">Your answer:</span>
+          <span class="val">${yourAns}</span>
+        </div>
+        ${!isCorrect ? `<div class="review-answer-row">
+          <span class="lbl" style="color:var(--green)">Correct:</span>
+          <span class="val">${corrAns}</span>
+        </div>` : ''}
+        <div class="review-exp">${q.explanation}</div>
+      </div>
+    </div>`;
+  });
+  list.innerHTML = html;
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+/* ── Inject sticky header ───────────────────────────────────────────────── */
+document.body.insertAdjacentHTML('afterbegin', `
+<header class="site-header">
+  <div class="header-title">
+    <h1>Module 3 Quiz — Access Control &amp; Modern Identity</h1>
+    <p>Philippine Government InfoSec Training</p>
+  </div>
+  <div class="progress-wrap">
+    <span class="progress-label" id="prog-label">— / 30</span>
+    <div class="progress-bar"><div class="progress-fill" id="prog-fill"></div></div>
+  </div>
+</header>`);
+</script>
+
+</body></html>
